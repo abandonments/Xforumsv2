@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Thread | xBOARD</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo">xBOARD</a>
+        <div id="user-section"></div>
+    </nav>
+
+    <div class="breadcrumb">
+        <a href="index.html">xBOARD</a> / <span id="breadcrumb-category">Forum</span> / <span id="breadcrumb-title">Thread</span>
+    </div>
+
+    <div class="forum-container">
+        <div id="original-post">
+            <table class="tborder"><tr><td class="trow1" style="text-align:center; padding:50px;">Loading...</td></tr></table>
+        </div>
+
+        <div id="replies-list"></div>
+
+        <div id="reply-box" style="margin-top: 20px; display: none;">
+            <table class="tborder">
+                <thead><tr><td class="thead"><strong>Quick Reply</strong></td></tr></thead>
+                <tbody>
+                    <tr class="trow1">
+                        <td style="padding: 15px;">
+                            <textarea id="replyText" style="width: 100%; min-height: 120px; padding: 10px; background: #0d1117; color: white; border: 1px solid var(--border); box-sizing: border-box;" placeholder="Write your reply..."></textarea>
+                            <div style="margin-top: 10px; text-align: right;">
+                                <button id="submitReply" class="btn btn-primary">Post Reply</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="login-to-reply" class="trow1" style="text-align: center; padding: 20px; border: 1px solid var(--border); display: none;">
+            Please <a href="login.html" style="color:var(--accent)">Login</a> or <a href="signup.html" style="color:var(--accent)">Register</a> to reply.
+        </div>
+    </div>
+
+    <script type="module" src="thread-logic.js"></script>
+</body>
+</html>

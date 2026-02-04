@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | xBOARD</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar"><a href="index.html" class="logo">xBOARD</a></nav>
+    <div class="auth-container" style="max-width: 400px; margin: 50px auto;">
+        <form id="loginForm">
+            <table class="tborder">
+                <thead><tr><td class="thead">Login</td></tr></thead>
+                <tr class="trow1"><td>Email:</td><td><input type="email" id="loginEmail" required class="input-text"></td></tr>
+                <tr class="trow2"><td>Password:</td><td><input type="password" id="loginPass" required class="input-text"></td></tr>
+                <tr><td colspan="2" style="text-align:center; padding:20px;"><button type="submit" class="btn btn-primary">Login</button></td></tr>
+            </table>
+        </form>
+    </div>
+    <script type="module">
+        import { signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { auth, $ } from './config.js';
+        $('#loginForm').onsubmit = async (e) => {
+            e.preventDefault();
+            try {
+                await signInWithEmailAndPassword(auth, $('#loginEmail').value, $('#loginPass').value);
+                location.href = 'index.html';
+            } catch (err) { alert(err.message); }
+        };
+    </script>
+</body>
+</html>

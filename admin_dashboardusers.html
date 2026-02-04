@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management | Admin</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Specific overrides for Admin Sidebar layout */
+        .admin-layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: var(--panel); border-right: 1px solid var(--border); padding: 20px; }
+        .main-content { flex: 1; padding: 20px; }
+        .sidebar-link { display: block; padding: 10px; color: var(--text-main); margin-bottom: 5px; }
+        .sidebar-link:hover, .sidebar-link.active { background: var(--background); color: var(--accent); }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <div class="sidebar">
+            <h2 class="text-accent" style="margin-bottom: 30px;">ADMIN CP</h2>
+            <nav>
+                <a href="admin_dashboard.html" class="sidebar-link">Dashboard</a>
+                <a href="admin_dashboardusers.html" class="sidebar-link active">User Management</a>
+                <a href="index.html" class="sidebar-link" style="margin-top: 20px; border-top: 1px solid var(--border);">Exit to Site</a>
+            </nav>
+        </div>
+
+        <div class="main-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                <h1 style="font-size: 1.5rem; margin:0;">User Management</h1>
+                <button id="addBtn" class="btn btn-primary">+ Add User</button>
+            </div>
+
+            <table class="tborder">
+                <thead>
+                    <tr>
+                        <td class="thead">Username</td>
+                        <td class="thead">Email</td>
+                        <td class="thead">Role</td>
+                        <td class="thead" style="text-align: right;">Actions</td>
+                    </tr>
+                </thead>
+                <tbody id="userTable">
+                    <tr class="trow1"><td colspan="4" class="text-center">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="modal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); align-items:center; justify-content:center;">
+        <div class="auth-container" style="background: var(--panel); padding: 20px; border: 1px solid var(--accent); width: 300px;">
+            <h3 class="text-accent">Add User</h3>
+            <form id="userForm" style="margin-top: 20px;">
+                <div style="margin-bottom: 10px;">
+                    <label>Username</label><br>
+                    <input type="text" id="newUsername" required style="width: 100%;">
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label>Email</label><br>
+                    <input type="email" id="newEmail" style="width: 100%;">
+                </div>
+                <div style="display:flex; gap:10px; margin-top: 15px;">
+                    <button type="button" id="closeModal" class="btn" style="flex:1">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { collection, getDocs, addDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { db, $ } from './config.js';
+
+        const loadUsers = async () => {
+            const tbody = $('#userTable');
+            tbody.innerHTML = '<tr class="trow1"><td colspan="4">Loading...</td></tr>';
+            
+            try {
+                const snap = await getDocs(collection(db, "users"));
+                tbody.innerHTML = '';
+                
+                let i = 0;
+                snap.forEach(d => {
+                    const u = d.data();
+                    const tr = document.createElement('tr');
+                    // Alternate row colors
+                    tr.className = (i % 2 === 0) ? 'trow1' : 'trow2';
+                    tr.innerHTML = `
+                        <td><strong>${u.username || 'N/A'}</strong></td>
+                        <td>${u.email || 'N/A'}</td>
+                        <td>${u.role || 'User'}</td>
+                        <td style="text-align: right;">
+                            <button class="btn btn-danger" onclick="deleteUser('${d.id}')" style="font-size: 0.8rem;">Delete</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                    i++;
+                });
+            } catch (e) {
+                console.error(e);
+                tbody.innerHTML = '<tr class="trow1"><td colspan="4">Error loading data</td></tr>';
+            }
+        };
+
+        window.deleteUser = async (id) => {
+            if(!confirm('Delete this user?')) return;
+            await deleteDoc(doc(db, "users", id));
+            loadUsers();
+        };
+
+        $('#addBtn').onclick = () => $('#modal').style.display = 'flex';
+        $('#closeModal').onclick = () => $('#modal').style.display = 'none';
+
+        $('#userForm').onsubmit = async (e) => {
+            e.preventDefault();
+            await addDoc(collection(db, "users"), {
+                username: $('#newUsername').value,
+                email: $('#newEmail').value || "N/A",
+                role: "User",
+                createdAt: new Date().toISOString()
+            });
+            $('#modal').style.display = 'none';
+            loadUsers();
+        };
+
+        loadUsers();
+    </script>
+</body>
+</html>

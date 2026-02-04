@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register | xBOARD</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar"><a href="index.html" class="logo">&lt;xBOARD /&gt;</a></nav>
+    <div class="auth-container" style="max-width: 500px; margin: 50px auto;">
+        <form id="signupForm">
+            <table class="tborder">
+                <thead><tr><td class="thead" colspan="2"><strong>Register</strong></td></tr></thead>
+                <tbody>
+                    <tr class="trow1"><td>Username:</td><td><input type="text" id="username" required class="input-text"></td></tr>
+                    <tr class="trow2"><td>Email:</td><td><input type="email" id="email" required class="input-text"></td></tr>
+                    <tr class="trow1"><td>Password:</td><td><input type="password" id="password" required class="input-text"></td></tr>
+                    <tr><td colspan="2" style="text-align:center; padding:20px;"><button type="submit" id="signupBtn" class="btn btn-primary">Create Account</button></td></tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <script type="module">
+        import { createUserWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { auth, db, $ } from './config.js';
+
+        $('#signupForm').onsubmit = async (e) => {
+            e.preventDefault();
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, $('#email').value, $('#password').value);
+                await updateProfile(cred.user, { displayName: $('#username').value });
+                await setDoc(doc(db, "users", cred.user.uid), {
+                    username: $('#username').value,
+                    email: $('#email').value,
+                    role: "User",
+                    createdAt: new Date().toISOString()
+                });
+                location.href = 'index.html';
+            } catch (err) { alert(err.message); }
+        };
+    </script>
+</body>
+</html>

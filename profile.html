@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile | xBOARD</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar"><a href="index.html" class="logo">xBOARD</a><div id="user-section"></div></nav>
+    <div class="forum-container" style="max-width: 600px; margin-top: 30px;">
+        <table class="tborder">
+            <thead><tr><td class="thead">Edit Profile</td></tr></thead>
+            <tr class="trow1">
+                <td style="padding: 20px;">
+                    <div style="text-align:center;"><img id="currentAvatar" src="" style="width:100px; height:100px; border:1px solid var(--accent);"></div>
+                    <form id="profileForm">
+                        <label>Display Name:</label><input type="text" id="profUsername" class="input-text" style="width:100%; margin:10px 0;">
+                        <label>Avatar URL:</label><input type="text" id="profAvatarUrl" class="input-text" style="width:100%; margin:10px 0;">
+                        <button type="submit" id="saveBtn" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <script type="module">
+        import { doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { updateProfile, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { auth, db, $ } from './config.js';
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) return location.href = 'login.html';
+            const snap = await getDoc(doc(db, "users", user.uid));
+            if (snap.exists()) {
+                const data = snap.data();
+                $('#profUsername').value = data.username || "";
+                $('#profAvatarUrl').value = data.avatarUrl || "";
+                $('#currentAvatar').src = data.avatarUrl || `https://ui-avatars.com/api/?name=${user.displayName}&background=random&color=fff`;
+            }
+        });
+
+        $('#profileForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const user = auth.currentUser;
+            try {
+                await Promise.all([
+                    updateProfile(user, { displayName: $('#profUsername').value, photoURL: $('#profAvatarUrl').value }),
+                    updateDoc(doc(db, "users", user.uid), { username: $('#profUsername').value, avatarUrl: $('#profAvatarUrl').value })
+                ]);
+                location.reload();
+            } catch (err) { alert(err.message); }
+        };
+    </script>
+</body>
+</html>
