@@ -13,7 +13,7 @@ export function initForum(categoryID, categoryName) {
         newPostBtn.textContent = user ? "+ Post New Thread" : "Login to Post";
     });
 
-    // Real-time listener for thread updates
+    // rebirth & law were here <3
     const q = query(collection(db, "threads"), where("category", "==", categoryID), orderBy("createdAt", "desc"));
     onSnapshot(q, (snapshot) => {
         list.innerHTML = snapshot.empty ? `<tr class="trow1"><td colspan="3" style="text-align:center; padding:30px;">No threads in ${categoryName}.</td></tr>` : '';
