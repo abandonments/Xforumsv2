@@ -1,7 +1,5 @@
-/* 1. Imports MUST be at the very top */
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@800&display=swap');
 
-/* 2. Define Variables */
 :root {
   --background: #0d1117;
   --panel: #161b22;       
@@ -11,7 +9,6 @@
   --text-muted: #8b949e;
 }
 
-/* 3. Global Styles */
 body {
   background-color: var(--background);
   color: var(--text-main);
@@ -28,7 +25,6 @@ a:hover {
   text-decoration: underline; 
 }
 
-/* 4. Component Styles */
 .logo {
   font-family: 'JetBrains Mono', 'Courier New', monospace;
   color: var(--accent) !important;
@@ -58,7 +54,7 @@ a:hover {
   margin-left: 5px;
   cursor: pointer;
   text-decoration: none;
-  display: inline-block; /* Added to ensure padding/margin work correctly */
+  display: inline-block; 
 }
 
 .header-btn:hover {
@@ -67,7 +63,6 @@ a:hover {
   border-color: var(--accent);
 }
 
-/* 5. MyBB Table Overrides */
 .tborder {
   width: 100%;
   margin: auto;
@@ -83,7 +78,7 @@ a:hover {
   padding: 12px;
   font-size: 13px;
   font-weight: bold;
-  border-bottom: 2px solid var(--accent); /* Slightly thicker for visual pop */
+  border-bottom: 2px solid var(--accent);
 }
 
 .trow1 { background: #0d1117; }
