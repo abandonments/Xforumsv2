@@ -16,7 +16,7 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const $ = (s) => document.querySelector(s);
 
-// Persistent Auth Listener for Navbar updates
+// if your reading this your cool :3
 onAuthStateChanged(auth, async (user) => {
     const userSection = $('#user-section');
     if (!userSection) return;
